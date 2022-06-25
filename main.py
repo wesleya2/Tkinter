@@ -49,11 +49,26 @@ class Application():
         self.codigo_entry.place(relx=0.04, rely=0.11, relwidth=0.15, relheight=0.14)
 
         #Label Frame1/Input Nome
-        self.lb_codigo = Label(self.frame_1, text='Nome')
-        self.lb_codigo.place(relx=0.04, rely=0.35)
+        self.lb_nome = Label(self.frame_1, text='Nome')
+        self.lb_nome.place(relx=0.04, rely=0.25)
 
-        self.codigo_entry = Entry(self.frame_1)
-        self.codigo_entry.place(relx=0.04, rely=0.40, relwidth=0.15, relheight=0.14)
+        self.nome_entry = Entry(self.frame_1)
+        self.nome_entry.place(relx=0.04, rely=0.30, relwidth=0.8, relheight=0.14)
+
+        # Label Frame1/Input Telefone
+        self.lb_telefone = Label(self.frame_1, text='Telefone')
+        self.lb_telefone.place(relx=0.04, rely=0.44)
+
+        self.telefone_entry = Entry(self.frame_1)
+        self.telefone_entry.place(relx=0.04, rely=0.49, relwidth=0.16, relheight=0.14)
+
+        #Label Frame1/Input Cidade
+
+        self.lb_cidade = Label(self.frame_1, text='Cidade')
+        self.lb_cidade.place(relx=0.21, rely=0.44)
+
+        self.cidade_entry = Entry(self.frame_1)
+        self.cidade_entry.place(relx=0.21, rely=0.49, relwidth=0.16, relheight=0.14)
 
 
 Application()
