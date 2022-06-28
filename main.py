@@ -1,8 +1,16 @@
 from tkinter import *
 from tkinter import ttk
+
 root = Tk()
 
-class Application():
+class Funcs():
+    def limpa_tela(self):
+        self.codigo_entry.delete(0, END)
+        self.nome_entry.delete(0, END)
+        self.telefone_entry.delete(0, END)
+        self.cidade_entry.delete(0, END)
+
+class Application(Funcs):
     def __init__(self):
         self.root = root
         self.tela()
@@ -27,7 +35,7 @@ class Application():
 
     def botoes_frame_1(self):
         #Botao Limpar #bg cor botão, ufg cor do texto, font(tipo,tamanho,italigo/negrito) fg
-        self.bt_limpar = Button(self.frame_1, text='Limpar', border=2, bg = '#107db2', fg = 'white')
+        self.bt_limpar = Button(self.frame_1, text='Limpar', border=2, bg = '#107db2', fg = 'white', command= self.limpa_tela)
         self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
         # Botao Buscar
         self.bt_buscar = Button(self.frame_1, text='Buscar', border=2, bg = '#107db2', fg = 'white')
