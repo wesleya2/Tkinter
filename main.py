@@ -1,5 +1,5 @@
 from tkinter import *
-
+from tkinter import ttk
 root = Tk()
 
 class Application():
@@ -8,6 +8,7 @@ class Application():
         self.tela()
         self.frames_da_tela()
         self.botoes_frame_1()
+        self.lista_frame2()
         root.mainloop()
 
     def tela(self):
@@ -69,6 +70,26 @@ class Application():
 
         self.cidade_entry = Entry(self.frame_1)
         self.cidade_entry.place(relx=0.21, rely=0.73, relwidth=0.16, relheight=0.14)
+
+    def lista_frame2(self):
+        self.listaCli = ttk.Treeview(self.frame_2, height = 3, columns= ("col1", "col2", "col3", "col4"))
+        self.listaCli.heading("#0", text="")
+        self.listaCli.heading("#1", text="Código")
+        self.listaCli.heading("#2", text="Nome")
+        self.listaCli.heading("#3", text="Telefone")
+        self.listaCli.heading("#4", text="Cidade")
+
+        self.listaCli.column("#0", width=1)
+        self.listaCli.column("#1", width=50)
+        self.listaCli.column("#2", width=200)
+        self.listaCli.column("#3", width=125)
+        self.listaCli.column("#4", width=125)
+
+        self.listaCli.place(relx=0.01, rely=0.1, relwidth=0.95, relheight=0.85)
+
+        self.scroolLista = Scrollbar(self.frame_2, orient='vertical')
+        self.listaCli.configure(yscrollcommand=self.scroolLista.set)
+        self.scroolLista.place(relx=0.96, rely=0.1, relwidth=0.04, relheight=0.85)
 
 
 Application()
