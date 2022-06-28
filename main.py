@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import sqlite3
 
 root = Tk()
 
@@ -9,6 +10,44 @@ class Funcs():
         self.nome_entry.delete(0, END)
         self.telefone_entry.delete(0, END)
         self.cidade_entry.delete(0, END)
+    def conecta_db(self):
+        self.conn = sqlite3.connect('Clientes.bd')
+        self.cursor = self.conn.cursor(); print('Conectando banco de dados')
+    def desconecta_bd(self):
+        self.conn.close(); print('Desconectando banco de dados')
+    def montaTabelas(self):
+        self.conecta_db(); print('Conectando ao banco de dados')
+        ###Criar tabela###
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS clientes (
+                cod INTEGER PRIMARY KEY,
+                nome_cliente CHAR(40) NOT NULL,
+                telefone INTEGER(20),
+                cidade CHAR(40)
+            );
+        """)
+        self.conn.commit(); print('Banco de dados criado')
+        self.desconecta_bd()
+    def add_cliente(self):
+        self.codigo = self.codigo_entry.get()
+        self.nome = self.nome_entry.get()
+        self.telefone = self.telefone_entry.get()
+        self.cidade = self.cidade_entry.get()
+        self.conecta_db()
+        self.cursor.execute(""" INSERT INTO clientes (nome_cliente, telefone, cidade)
+                VALUES (?,?,?)""", (self.nome, self.telefone, self.cidade))
+        self.conn.commit()
+        self.desconecta_bd()
+        self.select_lista()
+        self.limpa_tela()
+    def select_lista(self):
+        self.listaCli.delete(*self.listaCli.get_children())
+        self.conecta_db()
+        lista = self.cursor.execute(""" SELECT cod, nome_cliente, telefone, cidade FROM clientes 
+            ORDER BY nome_cliente ASC; """)
+        for i in lista:
+            self.listaCli.insert("", END, values=i)
+        self.desconecta_bd()
 
 class Application(Funcs):
     def __init__(self):
@@ -17,6 +56,8 @@ class Application(Funcs):
         self.frames_da_tela()
         self.botoes_frame_1()
         self.lista_frame2()
+        self.montaTabelas()
+        self.select_lista()
         root.mainloop()
 
     def tela(self):
@@ -41,7 +82,7 @@ class Application(Funcs):
         self.bt_buscar = Button(self.frame_1, text='Buscar', border=2, bg = '#107db2', fg = 'white')
         self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
         # Botao Novo
-        self.bt_novo = Button(self.frame_1, text='Novo', border=2, bg = '#107db2', fg = 'white')
+        self.bt_novo = Button(self.frame_1, text='Novo', border=2, bg = '#107db2', fg = 'white', command=self.add_cliente)
         self.bt_novo.place(relx=0.6, rely=0.1, relwidth=0.1, relheight=0.15)
         # Botao Alterar
         self.bt_alterar = Button(self.frame_1, text='Alterar', border=2, bg = '#107db2', fg = 'white')
