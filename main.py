@@ -5,6 +5,11 @@ import sqlite3
 root = Tk()
 
 class Funcs():
+    def variaveis(self):
+        self.codigo = self.codigo_entry.get()
+        self.nome = self.nome_entry.get()
+        self.telefone = self.telefone_entry.get()
+        self.cidade = self.cidade_entry.get()
     def limpa_tela(self):
         self.codigo_entry.delete(0, END)
         self.nome_entry.delete(0, END)
@@ -29,10 +34,7 @@ class Funcs():
         self.conn.commit(); print('Banco de dados criado')
         self.desconecta_bd()
     def add_cliente(self):
-        self.codigo = self.codigo_entry.get()
-        self.nome = self.nome_entry.get()
-        self.telefone = self.telefone_entry.get()
-        self.cidade = self.cidade_entry.get()
+        self.variaveis()
         self.conecta_db()
         self.cursor.execute(""" INSERT INTO clientes (nome_cliente, telefone, cidade)
                 VALUES (?,?,?)""", (self.nome, self.telefone, self.cidade))
@@ -48,6 +50,33 @@ class Funcs():
         for i in lista:
             self.listaCli.insert("", END, values=i)
         self.desconecta_bd()
+    def duploclick(self, event):
+        self.limpa_tela()
+        self.listaCli.selection()
+
+        for n in self.listaCli.selection():
+            col1,col2,col3,col4 = self.listaCli.item(n, 'values')
+            self.codigo_entry.insert(END, col1)
+            self.nome_entry.insert(END, col2)
+            self.telefone_entry.insert(END, col3)
+            self.cidade_entry.insert(END, col4)
+    def deleta_cliente(self):
+        self.variaveis()
+        self.conecta_db()
+        self.cursor.execute("""DELETE FROM clientes WHERE cod = ?""",(self.codigo))
+        self.conn.commit()
+        self.desconecta_bd()
+        self.limpa_tela()
+        self.select_lista()
+    def alterar_cliente(self):
+        self.variaveis()
+        self.conecta_db()
+        self.cursor.execute(""" UPDATE clientes SET nome_cliente = ?, telefone = ?, cidade = ?
+            WHERE cod = ? """,(self.nome,self.telefone,self.cidade,self.codigo))
+        self.conn.commit()
+        self.desconecta_bd()
+        self.select_lista()
+        self.limpa_tela()
 
 class Application(Funcs):
     def __init__(self):
@@ -58,6 +87,7 @@ class Application(Funcs):
         self.lista_frame2()
         self.montaTabelas()
         self.select_lista()
+        self.Menus()
         root.mainloop()
 
     def tela(self):
@@ -85,10 +115,10 @@ class Application(Funcs):
         self.bt_novo = Button(self.frame_1, text='Novo', border=2, bg = '#107db2', fg = 'white', command=self.add_cliente)
         self.bt_novo.place(relx=0.6, rely=0.1, relwidth=0.1, relheight=0.15)
         # Botao Alterar
-        self.bt_alterar = Button(self.frame_1, text='Alterar', border=2, bg = '#107db2', fg = 'white')
+        self.bt_alterar = Button(self.frame_1, text='Alterar', border=2, bg = '#107db2', fg = 'white', command=self.alterar_cliente)
         self.bt_alterar.place(relx=0.7, rely=0.1, relwidth=0.1, relheight=0.15)
         # Botao Apagar
-        self.bt_apagar = Button(self.frame_1, text='Apagar', border=2, bg = '#107db2', fg = 'white')
+        self.bt_apagar = Button(self.frame_1, text='Apagar', border=2, bg = '#107db2', fg = 'white', command=self.deleta_cliente)
         self.bt_apagar.place(relx=0.8, rely=0.1, relwidth=0.1, relheight=0.15)
 
         #Label Frame1/Input Código fg = '#107db2'
@@ -139,6 +169,21 @@ class Application(Funcs):
         self.scroolLista = Scrollbar(self.frame_2, orient='vertical')
         self.listaCli.configure(yscrollcommand=self.scroolLista.set)
         self.scroolLista.place(relx=0.96, rely=0.1, relwidth=0.04, relheight=0.85)
+        self.listaCli.bind("<Double-1>",self.duploclick)
+
+    def Menus(self):
+        menubar = Menu(self.root)
+        self.root.config(menu=menubar)
+        filemenu = Menu(menubar)
+        filemenu2 = Menu(menubar)
+
+        def Quit(): self.root.destroy()
+
+        menubar.add_cascade(label= "Opções",menu= filemenu)
+        menubar.add_cascade(label= "Sobre",menu= filemenu2)
+
+        filemenu.add_command(label="Sair", command= Quit)
+        filemenu2.add_command(label="Limpa Cliente",command= self.limpa_tela)
 
 
 Application()
